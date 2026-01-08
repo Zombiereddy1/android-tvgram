@@ -1,10 +1,8 @@
 name: Build Android APK
 
 on:
-  # This makes the build start whenever you push code
   push:
     branches: [ "main", "master" ]
-  # This allows you to click a button to start the build manually
   workflow_dispatch:
 
 jobs:
@@ -12,29 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Download your code to the server
-    - uses: actions/checkout@v3
+    # 1. Check out the code
+    - uses: actions/checkout@v4
 
-    # Step 2: Set up the Java environment (needed for Android)
+    # 2. Set up Java
+    # Note: If this fails, change '17' to '11' in the line below.
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: gradle
 
-    # Step 3: Give permission to the build script
+    # 3. FIX PERMISSIONS (This fixes the most common error)
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    # Step 4: Build the Debug APK
+    # 4. Build the APK (As Is - No API replacement)
     - name: Build with Gradle
       run: ./gradlew assembleDebug
 
-    # Step 5: Save the APK so you can download it
+    # 5. Upload the APK
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: my-debug-app
+        name: my-app-debug
         path: app/build/outputs/apk/debug/app-debug.apk
         
